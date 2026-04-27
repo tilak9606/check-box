@@ -1,80 +1,61 @@
-import { WebSocket, WebSocketServer } from "ws";
 import http from "http";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
+import { Server } from "socket.io";
+import express from "express";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const server = http.createServer((req, res) => {
-  let filePath = path.join(__dirname, "index.html");
-  if (req.url === "/script.js") {
-    filePath = path.join(__dirname, "script.js");
-  }
-
-  fs.readFile(filePath, (err, data) => {
-    if (err) {
-      res.writeHead(404);
-      res.end("File not found");
-      return;
-    }
-    if (req.url === "/script.js") {
-      res.writeHead(200, { "Content-Type": "application/javascript" });
-    } else {
-      res.writeHead(200, { "Content-Type": "text/html" });
-    }
-
-    res.end(data);
-  });
-});
-
-const wss = new WebSocketServer({ server });
-
-let activeUsers = 0;
-let checkboxState = new Array(100).fill(false);
-
-wss.on("connection", (ws) => {
-  activeUsers++;
-  broadcastStats();
-
-  ws.send(JSON.stringify(checkboxState));
-  ws.send(JSON.stringify({ activeUsers }));
-
-  ws.on("message", (message) => {
-    const data = JSON.parse(message);
-    const userId = ws._socket.remoteAddress;
-
-    if (data.index !== undefined && data.checked !== undefined) {
-      checkboxState[data.index] = data.checked;
-      broadcastCheckboxState(data);
-    }
+async function main() {
+  const app = express();
+  const rateLimitingHashMap = new Map();
+  const server = http.createServer(app);
+  const PORT = process.env.PORT || 8000;
+  app.get("/health", (req, res) => {
+    res.json({
+      health: true,
+    });
   });
 
-  ws.on("close", () => {
-    activeUsers--;
-    broadcastStats();
-  });
-});
+  const CHECKBOX_COUNT = 5000;
+  const checkboxes = new Array(CHECKBOX_COUNT).fill(null);
 
-function broadcastStats() {
-  const stats = { activeUsers };
-  wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(stats));
-    }
+  const io = new Server();
+  io.attach(server);
+
+  io.on("connection", (socket) => {
+    console.log("Socket connected", { id: socket.id });
+    socket.emit("server:checkbox:status", checkboxes);
+
+    socket.on("client:checkbox:change", (data) => {
+      console.log(
+        `Received checkbox change from client: ${socket.id}, Data:`,
+        data,
+      );
+      let lastOpTime = rateLimitingHashMap.get(socket.id);
+      if (lastOpTime) {
+
+        if (lastOpTime + 5000 > Date.now()) {
+          socket.emit("server:error", {
+            data,
+            message:
+              "Hold on! let it breathe. You can only change a checkbox every 5 seconds.",
+          });
+          return;
+        } else {
+          rateLimitingHashMap.set(socket.id, Date.now());
+        }
+      } else {
+        rateLimitingHashMap.set(socket.id, Date.now());
+      }
+      checkboxes[data.index] = data.checked;
+      io.emit("server:checkbox:change", data);
+    });
+  });
+
+  app.use(express.static(path.resolve("./public")));
+  
+  server.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
   });
 }
 
-function broadcastCheckboxState(data) {
-  wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(data));
-    }
-  });
-}
-
-const PORT = 8080;
-server.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`);
-});
+main();
