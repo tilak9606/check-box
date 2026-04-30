@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login — check10k</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --deep:    rgb(27, 38, 44);
+        --navy:    rgb(15, 76, 117);
+        --mid:     rgb(50, 130, 184);
+        --pale:    rgb(187, 225, 250);
+        --surface: rgba(15, 76, 117, 0.18);
+        --border:  rgba(187, 225, 250, 0.12);
+        --border-bright: rgba(187, 225, 250, 0.22);
+        --glow:    rgba(50, 130, 184, 0.35);
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        min-height: 100vh;
+        font-family: Poppins, sans-serif;
+        color: var(--pale);
+        background: var(--deep);
+        background-image:
+          radial-gradient(ellipse 70% 60% at 50% 0%, rgba(15, 100, 117, 0.6) 0%, transparent 65%),
+          radial-gradient(ellipse 40% 40% at 15% 90%, rgba(50,130,184,0.1) 0%, transparent 60%);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      /* ── Topbar ── */
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 32px;
+        background: rgba(27,38,44,0.8);
+        backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--border);
+      }
+      .brand {
+        font-size: 1.25rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: var(--pale);
+        text-decoration: none;
+      }
+      .brand span { color: var(--mid); }
+
+      .auth-section { display: flex; gap: 10px; align-items: center; }
+
+      .btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 8px 18px; border-radius: 10px;
+        font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500;
+        cursor: pointer; border: 1px solid transparent;
+        transition: all 0.2s ease; text-decoration: none;
+      }
+      .btn svg { width: 15px; height: 15px; }
+      .btn-ghost { background: var(--surface); border-color: var(--border-bright); color: var(--pale); }
+      .btn-ghost:hover { background: rgba(50,130,184,0.2); border-color: rgba(187,225,250,0.35); transform: translateY(-1px); }
+      .btn-outline { background: transparent; border-color: var(--border-bright); color: rgba(187,225,250,0.7); }
+      .btn-outline:hover { border-color: var(--mid); color: var(--pale); transform: translateY(-1px); }
+
+      /* ── Main content ── */
+      .page-center {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 440px;
+        background: rgba(15,76,117,0.12);
+        border: 1px solid var(--border-bright);
+        border-radius: 20px;
+        padding: 44px 40px;
+        backdrop-filter: blur(16px);
+        box-shadow: 0 24px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(50,130,184,0.08);
+      }
+
+      .card-header { text-align: center; margin-bottom: 36px; }
+      .card-header h1 {
+        font-size: 1.9rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: var(--pale);
+        margin-bottom: 8px;
+      }
+      .card-header p { color: rgba(187,225,250,0.5); font-size: 0.9rem; }
+
+      .form-group { margin-bottom: 20px; }
+      label {
+        display: block;
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: rgba(187,225,250,0.65);
+        margin-bottom: 8px;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+      }
+      input[type="email"],
+      input[type="password"],
+      input[type="text"] {
+        width: 100%;
+        padding: 13px 16px;
+        border-radius: 10px;
+        background: rgba(27,38,44,0.7);
+        border: 1px solid rgba(187,225,250,0.14);
+        color: var(--pale);
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      input::placeholder { color: rgba(187,225,250,0.25); }
+      input:focus {
+        border-color: var(--mid);
+        box-shadow: 0 0 0 3px rgba(50,130,184,0.15);
+      }
+
+      .form-footer-link {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 8px;
+      }
+      .form-footer-link a {
+        font-size: 0.8rem;
+        color: var(--mid);
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+      .form-footer-link a:hover { color: var(--pale); }
+
+      .submit-btn {
+        width: 100%;
+        padding: 13px;
+        border-radius: 10px;
+        background: var(--navy);
+        border: 1px solid rgba(50,130,184,0.4);
+        color: var(--pale);
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-top: 8px;
+      }
+      .submit-btn:hover {
+        background: var(--mid);
+        transform: translateY(-1px);
+        box-shadow: 0 10px 28px var(--glow);
+      }
+      .submit-btn:active { transform: scale(0.98); }
+
+      .card-alt-link {
+        text-align: center;
+        margin-top: 22px;
+        font-size: 0.875rem;
+        color: rgba(187,225,250,0.45);
+      }
+      .card-alt-link a {
+        color: var(--mid);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.15s;
+      }
+      .card-alt-link a:hover { color: var(--pale); }
+
+      .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 14px;
+        font-size: 0.8rem;
+        color: rgba(187,225,250,0.3);
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+      .back-link:hover { color: rgba(187,225,250,0.6); }
+
+      /* error state */
+      .error-msg {
+        background: rgba(220,38,38,0.12);
+        border: 1px solid rgba(220,38,38,0.3);
+        color: #fca5a5;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        margin-bottom: 18px;
+        display: none;
+      }
+      .error-msg.visible { display: block; }
+
+      @media (max-width: 500px) {
+        .card { padding: 32px 24px; }
+        .topbar { padding: 14px 18px; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="topbar">
+      <a href="/" class="brand">check<span>10k</span></a>
+      <div id="auth-section" class="auth-section"></div>
+    </nav>
+
+    <div class="page-center">
+      <div class="card">
+        <div class="card-header">
+          <h1>Welcome back</h1>
+          <p>Log in to interact with checkboxes</p>
+        </div>
+
+        <div id="error-msg" class="error-msg"></div>
+
+        <form id="login-form">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" required placeholder="you@example.com" />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" required placeholder="••••••••" />
+
+          </div>
+          <button type="submit" class="submit-btn">Login</button>
+        </form>
+
+        <p class="card-alt-link">
+          Don't have an account? <a href="/signup">Sign up</a>
+        </p>
+        <a href="/" class="back-link">← Back to Home</a>
+      </div>
+    </div>
+
+    <script>
+      function updateAuthSection() {
+        const section = document.getElementById('auth-section');
+        const token   = localStorage.getItem('token');
+        const userStr = localStorage.getItem('user');
+        if (!section) return;
+        if (token && userStr) {
+          const user = JSON.parse(userStr);
+          section.innerHTML = `
+            <a href="/" class="btn btn-ghost">${escHtml(user.name)}</a>
+            <button onclick="logout()" class="btn btn-outline">Logout</button>`;
+        } else {
+          section.innerHTML = `
+            <a href="/" class="btn btn-outline">Home</a>
+            <a href="/signup" class="btn btn-ghost">Sign Up</a>`;
+        }
+      }
+
+      async function logout() {
+        const token = localStorage.getItem('token');
+        if (token) {
+          try { await fetch('/auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${token}` } }); } catch(e) {}
+        }
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.reload();
+      }
+
+      function escHtml(s) {
+        return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      }
+
+      function showError(msg) {
+        const el = document.getElementById('error-msg');
+        el.textContent = msg;
+        el.classList.add('visible');
+      }
+
+      document.getElementById('login-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        document.getElementById('error-msg').classList.remove('visible');
+        const email    = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        try {
+          const res  = await fetch('/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+          if (data.error) {
+            showError(data.error);
+          } else {
+            localStorage.setItem('token', data.data.refreshToken);
+            localStorage.setItem('user', JSON.stringify(data.data.user));
+            window.location.href = '/';
+          }
+        } catch (err) {
+          showError('Login failed. Please try again.');
+        }
+      });
+
+      updateAuthSection();
+    </script>
+  </body>
+</html>

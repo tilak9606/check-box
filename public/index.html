@@ -1,180 +1,354 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Checkboxes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --bg: #aef8f3;
-            --surface: #b6fbfd;
-            --ink: #1f1d1a;
-            --accent: rgb(0, 132, 255);
-            --line: rgba(31, 29, 26, 0.08);
-            --shadow: 0 18px 40px rgba(59, 45, 29, 0.1);
-        }
+      :root {
+        --mid: rgb(10, 133, 121);
+        --pale: rgb(25, 107, 132);
+        --bg: #aef8f3;
+        --surface: #b6fbfd;
+        --ink: #1f1d1a;
+        --accent: rgb(0, 132, 255);
+        --line: rgba(31, 29, 26, 0.08);
+        --shadow: 0 18px 40px rgba(59, 45, 29, 0.1);
+      }
 
-        * {
-            box-sizing: border-box;
-        }
+      * {
+        box-sizing: border-box;
+      }
 
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Space Grotesk", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background: linear-gradient(180deg, #98f5f9 0%, #c2f7da 100%);
+        padding: 32px 18px 48px;
+      }
+
+      .shell {
+        width: min(960px, 100%);
+        margin: 0 auto;
+      }
+
+      h1 {
+        color: #006a82;
+        margin: 0 0 22px;
+        font-family: poppins, "Segoe UI", sans-serif;
+        font-size: clamp(2.4rem, 5vw, 4rem);
+        line-height: 1;
+        letter-spacing: -0.04em;
+        text-align: center;
+        margin-bottom: 32px;
+      }
+
+      #container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(28px, 32px));
+        justify-content: center;
+        gap: 12px;
+        padding: 22px;
+        border-radius: 22px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
+        min-height: 320px;
+        align-content: start;
+      }
+
+      #container input[type="checkbox"] {
+        appearance: none;
+        width: 28px;
+        height: 28px;
+        margin: 0;
+        border-radius: 9px;
+        border: 1.5px solid rgb(133, 162, 249);
+        background: #99faea;
+        cursor: pointer;
+        position: relative;
+        transition:
+          transform 120ms ease,
+          border-color 120ms ease,
+          background-color 120ms ease,
+          box-shadow 120ms ease;
+      }
+
+      #container input[type="checkbox"]:hover {
+        transform: translateY(-1px);
+        border-color: rgb(88, 118, 255);
+        box-shadow: 0 8px 16px rgba(217, 108, 61, 0.12);
+      }
+
+      #container input[type="checkbox"]:checked {
+        background: var(--accent);
+        border-color: var(--accent);
+        box-shadow: 0 10px 18px rgb(175, 255, 221);
+      }
+
+      #container input[type="checkbox"]:checked::after {
+        content: "";
+        position: absolute;
+        left: 9px;
+        top: 5px;
+        width: 6px;
+        height: 11px;
+        border: solid #fff;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+
+      @media (max-width: 860px) {
         body {
-            margin: 0;
-            min-height: 100vh;
-            font-family: "Space Grotesk", "Segoe UI", sans-serif;
-            color: var(--ink);
-            background: linear-gradient(180deg, #98f5f9 0%, #c2f7da 100%);
-            padding: 32px 18px 48px;
+          padding-top: 24px;
         }
+      }
 
-        .shell {
-            width: min(960px, 100%);
-            margin: 0 auto;
-        }
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 24px;
+        transform: translateX(-50%) translateY(20px);
+        max-width: min(420px, calc(100vw - 32px));
+        padding: 12px 16px;
+        border-radius: 14px;
+        background: rgba(247, 81, 81, 0.94);
+        color: #fffdf8;
+        box-shadow: 0 18px 40px rgba(31, 29, 26, 0.22);
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          opacity 180ms ease,
+          transform 180ms ease;
+        font-size: 0.95rem;
+        text-align: center;
+      }
 
-        h1 {
-            color:#006a82;
-            margin: 0 0 22px;
-            font-family: poppins, "Segoe UI", sans-serif;
-            font-size: clamp(2.4rem, 5vw, 4rem);
-            line-height: 1;
-            letter-spacing: -0.04em;
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        #container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(28px, 32px));
-            justify-content: center;
-            gap: 12px;
-            padding: 22px;
-            border-radius: 22px;
-            background: var(--surface);
-            border: 1px solid var(--line);
-            box-shadow: var(--shadow);
-            min-height: 320px;
-            align-content: start;
-        }
-
-        #container input[type="checkbox"] {
-            appearance: none;
-            width: 28px;
-            height: 28px;
-            margin: 0;
-            border-radius: 9px;
-            border: 1.5px solid rgb(133, 162, 249);
-            background: #99faea;
-            cursor: pointer;
-            position: relative;
-            transition: transform 120ms ease, border-color 120ms ease, background-color 120ms ease, box-shadow 120ms ease;
-        }
-
-        #container input[type="checkbox"]:hover {
-            transform: translateY(-1px);
-            border-color: rgb(88, 118, 255);
-            box-shadow: 0 8px 16px rgba(217, 108, 61, 0.12);
-        }
-
-        #container input[type="checkbox"]:checked {
-            background: var(--accent);
-            border-color: var(--accent);
-            box-shadow: 0 10px 18px rgb(175, 255, 221);
-        }
-
-        #container input[type="checkbox"]:checked::after {
-            content: "";
-            position: absolute;
-            left: 9px;
-            top: 5px;
-            width: 6px;
-            height: 11px;
-            border: solid #fff;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-        }
-
-        @media (max-width: 860px) {
-            body {
-                padding-top: 24px;
-            }
-        }
-
-        .toast {
-            position: fixed;
-            left: 50%;
-            bottom: 24px;
-            transform: translateX(-50%) translateY(20px);
-            max-width: min(420px, calc(100vw - 32px));
-            padding: 12px 16px;
-            border-radius: 14px;
-            background: rgba(247, 81, 81, 0.94);
-            color: #fffdf8;
-            box-shadow: 0 18px 40px rgba(31, 29, 26, 0.22);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 180ms ease, transform 180ms ease;
-            font-size: 0.95rem;
-            text-align: center;
-        }
-
-        .toast.is-visible {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+      .toast.is-visible {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      .brand {
+        font-size: 1.25rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        color: var(--pale);
+        text-decoration: none;
+      }
+      .brand span {
+        color: var(--mid);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <main class="shell">
-        <h1>10000 Checkboxes</h1>
-        <div id="container">
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+          flex-wrap: wrap;
+          margin-bottom: 32px;
+        "
+      >
+        <a href="/" class="brand">check<span>10k</span></a>
+        <div
+          id="auth-section"
+          style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap"
+        >
+          <button
+            type="button"
+            onclick="window.location.href = '/login'"
+            class="group relative px-6 py-3 rounded-2xl font-semibold text-sm text-white border border-[#0a87a4]/35 bg-gradient-to-r from-[#0b7f98] to-[#0e5f9a] shadow-[0_14px_30px_rgba(0,106,130,0.22)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_18px_36px_rgba(0,106,130,0.3)] active:scale-95 overflow-hidden"
+          >
+            <span class="relative z-10 flex items-center gap-4 text-md sm">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                />
+              </svg>
+              <span class="text-base">Login</span>
+            </span>
+          </button>
+          <button
+            type="button"
+            onclick="window.location.href = '/signup'"
+            class="group relative px-6 py-3 rounded-2xl font-semibold text-sm text-[#17303a] border border-[#7de3da]/60 bg-gradient-to-r from-[#b9fff1] to-[#9be7ff] shadow-[0_14px_30px_rgba(0,106,130,0.16)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_18px_36px_rgba(0,106,130,0.2)] active:scale-95 overflow-hidden"
+          >
+            <span class="relative z-10 flex items-center gap-4 text-xl">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                />
+              </svg>
+              <span class="text-base">Sign Up</span>
+            </span>
+          </button>
         </div>
+      </div>
+      <div id="container"></div>
     </main>
     <div id="toast" class="toast" role="alert" aria-live="polite"></div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const container=document.getElementById('container');
-        const toast=document.getElementById('toast');
-        const socket=io();
-        const CHECKBOX_COUNT=10000;
-        let toastTimeout;
+      let isLoggedIn = false;
+      const container = document.getElementById("container");
+      const toast = document.getElementById("toast");
+      const socket = io();
+      const CHECKBOX_COUNT = 10000;
+      let toastTimeout;
+      if (!localStorage.getItem("token") || !localStorage.getItem("user")) {
+        if (!isLoggedIn) {
+          document
+            .querySelectorAll("#container input[type='checkbox']")
+            .forEach((checkbox) => {
+              checkbox.disabled = true;
+            });
+        }
+        container.addEventListener("click", (e) => {
+          if (!isLoggedIn) {
+            e.preventDefault();
+            alert("Please login to interact");
+            window.location.href = "/login";
+          }
+        });
+      } else if (
+        localStorage.getItem("token") &&
+        localStorage.getItem("user")
+      ) {
+        document
+          .querySelectorAll("#container input[type='checkbox']")
+          .forEach((checkbox) => {
+            checkbox.disabled = true;
+          });
+      }
 
-        function showToast(message){
-            toast.textContent=message;
-            toast.classList.add('is-visible');
-            clearTimeout(toastTimeout);
-            toastTimeout=setTimeout(()=>{
-                toast.classList.remove('is-visible');
-            },3000);
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("is-visible");
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+          toast.classList.remove("is-visible");
+        }, 3000);
+      }
+
+      new Array(CHECKBOX_COUNT).fill(null).forEach((_, index) => {
+        const input = document.createElement("input");
+        input.id = `checkbox-${index}`;
+        input.type = "checkbox";
+        input.addEventListener("change", (event) => {
+          let checked = event.target.checked;
+          socket.emit("client:checkbox:change", { index, checked });
+        });
+        container.appendChild(input);
+      });
+
+      socket.on("server:checkbox:change", (data) => {
+        document.querySelector(`#checkbox-${data.index}`).checked =
+          data.checked;
+      });
+      socket.on("server:checkbox:status", (data) => {
+        data.forEach((_, index) => {
+          document.querySelector(`#checkbox-${index}`).checked = data[index];
+        });
+      });
+
+      socket.on("server:error", (error) => {
+        let checkbox = document.querySelector(`#checkbox-${error.data.index}`);
+        checkbox.checked = !error.data.checked;
+        showToast(error.message || "Something went wrong. Please try again.");
+      });
+
+      function updateAuthSection() {
+        const token = localStorage.getItem("token");
+        const userStr = localStorage.getItem("user");
+        const authSection = document.getElementById("auth-section");
+
+        if (!authSection) {
+          return;
         }
 
-        new Array(CHECKBOX_COUNT).fill(null).forEach((_,index)=>{
-            const input=document.createElement('input');
-            input.id=`checkbox-${index}`;
-            input.type='checkbox';
-            input.addEventListener('change',(event)=>{
-                let checked=event.target.checked;
-                socket.emit("client:checkbox:change",{index,checked})
+        if (token && userStr) {
+          const user = JSON.parse(userStr);
+          authSection.innerHTML = `
+                  <a href="/" class="group relative flex justify-center px-5 py-3 rounded-2xl font-semibold text-sm text-[#103746] border border-[#6dc7ba] bg-gradient-to-r from-[#e4fffb] to-[#c7f6ff] shadow-[0_14px_28px_rgba(0,106,130,0.12)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_18px_32px_rgba(0,106,130,0.18)] active:scale-95 overflow-hidden">
+                    <span class="relative z-10 flex items-center gap-4 text-base">
+                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      ${user.name}
+                    </span>
+                  </a>
+                  <button onclick="logout()" class="group relative flex justify-center px-5 py-3 rounded-2xl font-semibold text-sm text-[#7a2131] border border-[#efb6bf] bg-gradient-to-r from-[#fff2f5] to-[#ffdfe4] shadow-[0_14px_28px_rgba(0,106,130,0.1)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_18px_32px_rgba(244,63,94,0.16)] active:scale-95 overflow-hidden">
+                    <span class="relative z-10 flex items-center gap-4 text-base">
+                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      Logout
+                    </span>
+                  </button>
+                `;
+        } else {
+          authSection.innerHTML = `
+                  <button onclick="window.location.href='/login'" class="group relative px-5 py-3 rounded-2xl font-semibold text-sm text-white border border-[#0a87a4]/35 bg-gradient-to-r from-[#0b7f98] to-[#0e5f9a] shadow-[0_14px_30px_rgba(0,106,130,0.22)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_18px_36px_rgba(0,106,130,0.3)] active:scale-95 overflow-hidden">
+                    <span class="relative z-10 flex items-center gap-4 text-xl">
+                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                      </svg>
+                      <span class="text-base">Login</span>
+                    </span>
+                  </button>
+                  <button onclick="window.location.href='/signup'" class="group relative px-5 py-3 rounded-2xl font-semibold text-sm text-[#17303a] border border-[#7de3da]/60 bg-gradient-to-r from-[#b9fff1] to-[#9be7ff] shadow-[0_14px_30px_rgba(0,106,130,0.16)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_18px_36px_rgba(0,106,130,0.2)] active:scale-95 overflow-hidden">
+                    <span class="relative z-10 flex items-center gap-4 text-xl">
+                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                      </svg>
+                      <span class="text-base">Sign Up</span>
+                    </span>
+                  </button>
+                `;
+        }
+      }
+
+      async function logout() {
+        const token = localStorage.getItem("token");
+        if (token) {
+          try {
+            await fetch("/auth/logout", {
+              method: "POST",
+              headers: { Authorization: `Bearer ${token}` },
             });
-            container.appendChild(input);
-        })
-        socket.on("server:checkbox:change",data=>{
-            document.querySelector(`#checkbox-${data.index}`).checked=data.checked;
-            console.log(data);
-        })
-        socket.on("server:checkbox:status",data=>{
-            data.forEach((_,index)=>{
-                document.querySelector(`#checkbox-${index}`).checked=data[index];
-            })
-        })
+          } catch (e) {
+            console.error("Logout error:", e);
+          }
+        }
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.reload();
+      }
 
-        socket.on("server:error",error=>{
-            let checkbox=document.querySelector(`#checkbox-${error.data.index}`)
-            checkbox.checked=!error.data.checked;
-            showToast(error.message || "Something went wrong. Please try again.");
-        });
-
+      updateAuthSection();
     </script>
-</body>
+  </body>
 </html>
